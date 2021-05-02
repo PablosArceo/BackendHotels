@@ -6,7 +6,7 @@ var secret = 'clave_secreta'
 
 exports.ensureAuth = function (req,res,next) {
    if(!req.headers.authorization){
-        return res.status(401).send({ mensaje:'Solo el maestro puede efectuar esta acción' })
+        return res.status(401).send({ mensaje:'La peticion no tiene la cabezera de Autorizacion' })
    } 
 
    var token = req.headers.authorization.replace(/['"]+/g, '')
@@ -17,7 +17,7 @@ exports.ensureAuth = function (req,res,next) {
         // Exp = Variable que contiene el tiempo de expiración del token
        if (payload.exp <= moment().unix()) {
           return res.status(401).send({
-             mensaje: 'El mensaje ha expirado'
+             mensaje: 'El mensaje ha caducado'
           })
 
        }
