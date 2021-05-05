@@ -1,20 +1,23 @@
 'use strict'
 
-const express = require('express');
-const usuarioControlador = require('../controladores/usuario.controlador');
-const md_autentication = require('../middlewares/authenticated');
+// IMPORTACIONES
+const express = require("express");
+const usuarioControlador = require("../controladores/usuario.controlador")
 
+// MIDDLEWARES
+var md_autenticacion = require("../middlewares/authenticated")
 
-const api = express.Router();
+// RUTAS
+var api = express.Router();
+api.post('/registrarUsuario', usuarioControlador.registrar);
+api.get('/obtenerUsuarios', usuarioControlador.obtenerUsuarios);
+api.get('/obtenerUsuarioId/:idUsuario', usuarioControlador.obtenerUsuarioID);
+api.post('/login', usuarioControlador.login);
+api.put('/editarUsuario/:idUsuario', md_autenticacion.ensureAuth, usuarioControlador.editarUsuario);
+api.put('/editarUsuarioAdmin/:idUsuario', md_autenticacion.ensureAuth, usuarioControlador.editarUsuarioADMIN);
+api.delete('/eliminarUsuario/:idUsuario', md_autenticacion.ensureAuth, usuarioControlador.eliminarUsuario);
+api.delete('/eliminarUsuarioAdmin/:idUsuario', md_autenticacion.ensureAuth, usuarioControlador.eliminarUsuarioAdmin);
 
-//     === Login  General ===
-api.post('/login', usuarioControlador.login );
-
-
-
-
-//      === Cliente ===
-api.post('/registrarCliente',usuarioControlador.registrarCliente );
 
 
 module.exports = api;
