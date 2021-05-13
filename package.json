@@ -1,5 +1,5 @@
 {
-  "name": "proyectoventaonline",
+  "name": "backend",
   "version": "1.0.0",
   "description": "Proyecto Final Back End",
   "main": "index.js",
@@ -22,5 +22,13 @@
     "node": "^15.10.0",
     "nodemon": "^2.0.7"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Parceo2016416/GestorHoteles.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Parceo2016416/GestorHoteles/issues"
+  },
+  "homepage": "https://github.com/Parceo2016416/GestorHoteles#readme"
 }
