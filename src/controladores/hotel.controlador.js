@@ -12,8 +12,10 @@ const jwt = require('../servicios/jwt');
     var params = req.body;
     let hotelModel = new Hotel();
 
-    if(req.user.rol == 'ROL_ADMIN'){
-        
+    if(req.user.rol != "ROL_ADMIN"){
+        return res.status(500).send({ mensaje: "Solo el administrador puede registrar Hoteles" })
+    }
+    
         if(params.nombreHotel && params.direccion && params.idGerente){
 
             Hotel.find({$or: [
@@ -51,14 +53,9 @@ const jwt = require('../servicios/jwt');
             return res.status(500).send({mensaje: 'Debe llenar los datos'})
         }
 
-    }else{
-        return res.status(500).send({mensaje: 'No posee los permisos necesarios para hacer esta acción'});
-    }
 
 }
  
-
-
 function editarHotel(req, res) {
     var idHotel = req.params.idHotel;
     var params = req.body;
@@ -91,52 +88,7 @@ function eliminarHotel(req, res) {
     })
 }
 
- function registrarHabitacion(req,res) {
-    var idHabitacion = req.params.idHabitacion;
-    var params = req.body;
-
-    if(req.user.rol == 'ROL_ADMIN' || 
-       req.user.rol =='ROL_GERENTE'){
-
-        Hotel.findOneAndUpdate(idHabitacion,{$push: {habitaciones:{numeroHabitacion: params.idHabitacion, nombreHabitacion: params.nombreHabitacion, precio: params.precio}}},
-            {new: true}, (err,habitacionRegistrada)=>{
-                if(err) return res.status(500).send({mensaje: 'Error en la petición de las habitacione'});
-                if(!habitacionRegistrada) return res.status(500).send({mensaje: 'Error al guardar habitcacion'});
-                return res.status(500).send({habitacionRegistrada});
-            })
-    }else{
-        return res.status(500).send({mensaje: 'Unicamente los administradores y los gerentes pueden agregar habitaciones'})
-    }
-} 
-
-    // Corregir
-    function editarHab(req,res) {
-
-    var hotelId = req.params.idHotel;
-    var habitacionId = req.params.idHabitacion;
-    var params = req.body;
-
-    if(req.user.rol == 'ROL_ADMIN' || req.user.rol =='ROL_GERENTE'){
-
-        Hotel.findByIdAndUpdate({_id: hotelId, "habitaciones._id": habitacionId},
-        {"habitaciones.$.nombreHotel": params.nombreHotel, "habitaciones.$.descripcion": params.descripcion, "habitaciones.$.precio": params.precio},
-        {new: true, useFindAndModify: false}, (err,habitacionEditada)=>{
-    
-            if(err) return res.status(500).send({mensaje: 'Error en la petición de habitaciones'});
-            if(!habitacionEditada) return res.status(500).send({mensaje: 'Error al editar la habitacion'});
-    
-            return res.status(500).send({habitacionEditada});
-    
-        })
-
-    }else{
-        return res.status(500).send({mensaje: 'No posee los permisos necesarios para realizar esta acción'});
-    }
-
-}
  
-
-// Eliminar habitacion "Pendiente"
 
 
 
@@ -155,21 +107,15 @@ function obtenerHoteles(req,res) {
 
 function obtenerHotelesGerente(req,res) {
     
-    if(req.user.rol =='ROL_GERENTE'){
+    if (req.user.rol != 'ROL_GERENTE') return res.status(500).send({mensaje: 'Unicamente los gerentes pueden adquirir sus hoteles'})
 
-        Hotel.find({idGerente: req.user.sub},(err,hotelesEncontrados)=>{
+    Hotel.find({idGerente: req.user.sub},(err,hotelesEncontrados)=>{
 
-            if(err) return res.status(500).send({mensaje: 'Error en la petición de los hoteles'});
-            if(!hotelesEncontrados) return res.status(500).send({mensaje: 'Error al mostrar la peticion los hoteles'});
+        if(err) return res.status(500).send({mensaje: 'Error en la petición de los hoteles'});
+        if(!hotelesEncontrados) return res.status(500).send({mensaje: 'Error al mostrar la peticion los hoteles'});
 
-            return res.status(200).send({hotelesEncontrados});
-
-        })
-
-    }else{
-        return res.status(500).send({mensaje: 'Unicamente los gerentes pueden obtener los hoteles'});
-    }
-
+         return res.status(200).send({hotelesEncontrados});
+        })   
 }
 
 
@@ -177,8 +123,6 @@ module.exports={
     nuevoHotel,
     editarHotel,
     eliminarHotel,
-    registrarHabitacion,
-    editarHab,
     obtenerHotelesGerente,
     obtenerHoteles
     

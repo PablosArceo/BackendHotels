@@ -11,8 +11,8 @@ api.put('/editarHotel/:idHotel', md_autenticacion.ensureAuth, hotelControlador.e
 api.delete('/eliminarHotel/:idHotel', md_autenticacion.ensureAuth, hotelControlador.eliminarHotel);
 
  // Habitaciones
-api.put('/registrarHabitacion/:idHotel', md_autenticacion.ensureAuth, hotelControlador.registrarHabitacion);
-api.put('/editarHab/:idHotel/:idHabitacion', md_autenticacion.ensureAuth, hotelControlador.editarHab);  
+/* api.put('/registrarHabitacion/:idHotel', md_autenticacion.ensureAuth, hotelControlador.registrarHabitacion);
+api.put('/editarHab/:idHotel/:idHabitacion', md_autenticacion.ensureAuth, hotelControlador.editarHab);   */
 
 api.get('/obtenerHoteles',md_autenticacion.ensureAuth, hotelControlador.obtenerHoteles);
 api.get('/obtenerHotelesGerente',md_autenticacion.ensureAuth,hotelControlador.obtenerHotelesGerente);

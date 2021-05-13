@@ -12,38 +12,38 @@ const TipoEvento = require('../modelos/tipoEvento.model');
     var params = req.body;
     let eventoModel = new Evento();
 
-    if(req.user.rol == 'ROL_ADMIN'){
-        
+    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({mensaje:'Unicamente los administradores pueden registrar un evento'})
+
         if(params.nombreEvento && params.fecha){  
 
-            eventoModel.nombreEvento = params.nombreEvento;
-            eventoModel.capacidad = params.capacidad;
-            eventoModel.fecha = params.fecha;
-            eventoModel.idHotel = params.idHotel;
-            eventoModel.idtipoEvento = params.idtipoEvento;
+        eventoModel.nombreEvento = params.nombreEvento;
+        eventoModel.capacidad = params.capacidad;
+        eventoModel.fecha = params.fecha;
+        eventoModel.idHotel = params.idHotel;
+        eventoModel.idtipoEvento = params.idtipoEvento;
 
-            Evento.find({$or: [
-                {nombreEvento: eventoModel.nombreEvento}
-            ]}).exec((err,eventosEncontrados)=>{
+        Evento.find({$or: [
+        {nombreEvento: eventoModel.nombreEvento}
+        ]}).exec((err,eventosEncontrados)=>{
 
-                if(eventosEncontrados && eventosEncontrados.length >=1){
-                    return res.status(500).send({mensaje: 'El evento ya existe'});
+            if(eventosEncontrados && eventosEncontrados.length >=1){
+                return res.status(500).send({mensaje: 'El evento ya existe'});
                 }else{
 
-                    Hotel.findById(params.idHotel,(err,hotelEncontrado)=>{
-                        if(err) return res.status(500).send({mensaje: 'Error en la petición del hotel'});
-                        if(!hotelEncontrado) return res.status(500).send({mensaje: 'El hotel ingresado no se encuentra registrado'});
+                Hotel.findById(params.idHotel,(err,hotelEncontrado)=>{
+                    if(err) return res.status(500).send({mensaje: 'Error en la petición del hotel'});
+                    if(!hotelEncontrado) return res.status(500).send({mensaje: 'El hotel ingresado no se encuentra registrado'});
 
-                        TipoEvento.findById(params.idtipoEvento,(err,tipoEventoEncontrado)=>{
+                    TipoEvento.findById(params.idtipoEvento,(err,tipoEventoEncontrado)=>{
 
-                            if(err) return res.status(500).send({mensaje: 'Error en la petición del tipo evento'});
-                            if(!tipoEventoEncontrado) return res.status(500).send({mensaje: 'El Tipo Evento ingresado no se encuentra registrado'});
+                    if(err) return res.status(500).send({mensaje: 'Error en la petición del tipo evento'});
+                    if(!tipoEventoEncontrado) return res.status(500).send({mensaje: 'El Tipo Evento ingresado no se encuentra registrado'});
 
-                            eventoModel.save((err, eventoGuardado)=>{
-                                if(err) return res.status(500).send({mensaje: 'Error en la petición'});
+                    eventoModel.save((err, eventoGuardado)=>{
+                        if(err) return res.status(500).send({mensaje: 'Error en la petición'});
         
-                                if(eventoGuardado){
-                                    return res.status(200).send({eventoGuardado});
+                            if(eventoGuardado){
+                            return res.status(200).send({eventoGuardado});
                                 }
                             })
 
@@ -56,13 +56,8 @@ const TipoEvento = require('../modelos/tipoEvento.model');
             })
 
         }else{
-            return res.status(500).send({mensaje: 'Por favor revise todos los datos'});
-        }
-
-    }else{
-        return res.status(500).send({mensaje: 'Unicamente los administradores pueden registrar eventos'});
-    }
-    
+            return res.status(500).send({mensaje: 'Por favor ingrese todos los datos'});
+        }   
 } 
 
 /* function registrarEvento(req, res) {
@@ -95,41 +90,33 @@ function editarEvento(req,res) {
     var params = req.body;
     var idEvento  = req.params.idEvento;
 
-    if(req.user.rol == 'ROL_ADMIN'){
+    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({mensaje:'Unicamente los administradores pueden editar los eventos'})
 
-        Evento.findByIdAndUpdate(idEvento,params,{new: true, useFindAndModify: false},(err,eventoActualizado)=>{
 
-        if(err) return res.status(500).send({mensaje: 'Error en la petición'});
-        if(!eventoActualizado) return res.status(500).send({mensaje: 'Error en la peticion al actualizar el Evento'});
-        return res.status(200).send({eventoActualizado});
+    Evento.findByIdAndUpdate(idEvento,params,{new: true, useFindAndModify: false},(err,eventoActualizado)=>{
 
-        })
+    if(err) return res.status(500).send({mensaje: 'Error en la petición'});
+    if(!eventoActualizado) return res.status(500).send({mensaje: 'Error en la peticion al actualizar el Evento'});
+    return res.status(200).send({eventoActualizado});
 
-    }else{
-        return res.status(500).send({mensaje: 'Solo los administradores pueden editar eventos'});
-    }
-
+    })
 }
 
 function eliminarEvento(req,res) {
     var params = req.body;    
     var idEvento = req.params.idEvento
 
-    if(req.user.rol == 'ROL_ADMIN'){
+    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({mensaje:'Unicamente los administradores pueden eliminar los eventos'})
 
-        Evento.findByIdAndDelete(idEvento,(err,eventoEliminado)=>{
 
-        if(err) return res.status(500).send({mensaje: 'Error en la petición del evento'});
-        if(!eventoEliminado) return res.status(500).send({mensaje: 'Error en la peticion de  eliminar el evento'});
+    Evento.findByIdAndDelete(idEvento,(err,eventoEliminado)=>{
+
+    if(err) return res.status(500).send({mensaje: 'Error en la petición del evento'});
+    if(!eventoEliminado) return res.status(500).send({mensaje: 'Error en la peticion de  eliminar el evento'});
             
-        return res.status(200).send({eventoEliminado})
+    return res.status(200).send({eventoEliminado})
 
-        })
-
-    }else{
-        return res.status(500).send({mensaje: 'Solo los administradores pueden borrar eventos'});
-    }
-
+    })
 }
 
   // ============ Libre Acceso   ============
@@ -174,7 +161,6 @@ function obtenerEventosPorHotel(req, res){
     })
 }
 
-// Funcion para buscar Eventos por su tipo
 
 function obtenerPorTipoEvento(req, res){
     var idHotel = req.params.idHotel;
@@ -186,6 +172,8 @@ function obtenerPorTipoEvento(req, res){
         return res.status(200).send({ eventoencontrado });
     })
 }
+
+
 
 
 
