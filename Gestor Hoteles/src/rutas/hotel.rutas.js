@@ -16,5 +16,6 @@ api.put('/editarHab/:idHotel/:idHabitacion', md_autenticacion.ensureAuth, hotelC
 
 api.get('/obtenerHoteles',md_autenticacion.ensureAuth, hotelControlador.obtenerHoteles);
 api.get('/obtenerHotelesGerente',md_autenticacion.ensureAuth,hotelControlador.obtenerHotelesGerente);
+api.get('/obtenerHotelID/:idHotel',md_autenticacion.ensureAuth,hotelControlador.obtenerHotelID);
 
 module.exports = api;

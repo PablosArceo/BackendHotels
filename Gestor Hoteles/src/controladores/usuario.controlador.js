@@ -4,7 +4,6 @@ const Usuario = require('../modelos/usuario.model');
 const bcrypt = require("bcrypt-nodejs");
 const jwt = require('../servicios/jwt');
 
-//USUARIO PREDETERMINADO
 
 
 
@@ -112,9 +111,7 @@ function editarUsuario(req, res) {
 
     delete params.password;
 
-    if(req.user.rol != "ROL_CLIENTE"){
-        return res.status(500).send({ mensaje: 'Solo el cliente puede editar su perfil' });
-    }
+    
 
     Usuario.findByIdAndUpdate(idUsuario, params, { new: true }, (err, usuarioActualizado)=>{
         if(err) return res.status(500).send({ mensaje: 'Error en la peticion' });
@@ -130,9 +127,7 @@ function editarUsuario(req, res) {
 function eliminarUsuario(req, res) {
     const idUsuario = req.params.idUsuario;
 
-    if(req.user.rol != "ROL_CLIENTE"){
-        return res.status(500).send({ mensaje: 'Solo el cliente puede eliminar su perfil' })
-    }
+   
 
     Usuario.findByIdAndDelete(idUsuario, (err, usuarioEliminado)=>{
         if(err) return res.status(500).send({ mensaje: 'Error en la peticion de Eliminar' });
@@ -226,6 +221,14 @@ function eliminarUsuarioAdmin(req, res) {
 
 // ============ ADMIN HOTEL ============
 function registrarGerente(req, res) {
+
+
+    
+    if(req.user.rol != "ROL_ADMIN"){
+        return res.status(500).send({ mensaje: "Solo el Administrador puede editar su perfil" })
+    }
+
+
     var usuarioModel = new Usuario();
     var params = req.body;
     if (params.usuario && params.email && params.password) {

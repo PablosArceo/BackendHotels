@@ -17,11 +17,10 @@ api.delete('/eliminarUsuario/:idUsuario',md_autenticacion.ensureAuth,usuarioCont
 
 api.post('/registrarAdmin',usuarioControlador.registrarAdmin);
 api.put('/editarUsuarioAdmin/:idUsuario', md_autenticacion.ensureAuth, usuarioControlador.editarUsuarioADMIN);
-api.delete('/eliminarUsuario/:idUsuario', md_autenticacion.ensureAuth, usuarioControlador.eliminarUsuario);
 api.delete('/eliminarUsuarioAdmin/:idUsuario', md_autenticacion.ensureAuth, usuarioControlador.eliminarUsuarioAdmin);
 
 
-api.post('/registrarGerente',usuarioControlador.registrarGerente);
+api.post('/registrarGerente',md_autenticacion.ensureAuth,usuarioControlador.registrarGerente);
 api.put('/editarGerente/:idUsuario', md_autenticacion.ensureAuth, usuarioControlador.editarGerente);
 api.delete('/eliminarGerente/:idUsuario', md_autenticacion.ensureAuth, usuarioControlador.eliminarGerente);
 api.get('/obtenerGerentes',md_autenticacion.ensureAuth,usuarioControlador.obtenerGerentes);

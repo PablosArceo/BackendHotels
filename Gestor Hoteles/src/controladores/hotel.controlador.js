@@ -67,7 +67,7 @@ function editarHotel(req, res) {
 
     Hotel.findByIdAndUpdate(idHotel, params, { new: true }, (err, hotelActualizado) => {
         if(err) return res.status(500).send({ mensaje: 'Error en la peticion' });
-        if(!hotelActualizado) return res.status(500).send({ mensaje: 'No se ha podido actualizar al Usuario' });
+        if(!hotelActualizado) return res.status(500).send({ mensaje: 'No se ha podido actualizar el hotel' });
         return res.status(200).send({ hotelActualizado });
     })
 }
@@ -97,6 +97,7 @@ function obtenerHoteles(req,res) {
 
     Hotel.find((err,hotelesEncontrados)=>{
 
+
         if(err) return res.status(500).send({mensaje: 'Error al hacer la peticion'});
         if(!hotelesEncontrados) return res.status(500).send({mensaje: 'Error al buscar los hoteles'})
 
@@ -104,6 +105,24 @@ function obtenerHoteles(req,res) {
     })
     
 }
+
+
+
+function obtenerHotelID(req, res) {
+    var idHotel = req.params.idHotel
+    
+    if(req.user.rol != 'ROL_ADMIN'){
+        return res.status(500).send({mensaje: 'Solo el administrador de la aplicacion puede eliminar Hoteles'})
+    }
+
+    
+    Hotel.findById(idHotel, (err, hotelEncontrado) => {
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion del hotel' })
+        if (!hotelEncontrado) return res.status(500).send({ mensaje: 'Error en obtener los datos del hotel' })
+        return res.status(200).send({ hotelEncontrado })
+    })
+}
+
 
 function obtenerHotelesGerente(req,res) {
     
@@ -124,6 +143,7 @@ module.exports={
     editarHotel,
     eliminarHotel,
     obtenerHotelesGerente,
-    obtenerHoteles
+    obtenerHoteles,
+    obtenerHotelID
     
 }

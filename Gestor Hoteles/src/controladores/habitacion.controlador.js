@@ -49,29 +49,55 @@ function registrarHabitacion(req,res) {
 function editarHab(req,res) {
     
     var params = req.body;
-    var idServicio = req.params.idServicio;
+    var idHabitacion = req.params.idHabitacion;
 
-    if (req.user.rol != 'ROL_GERENTE') return res.status(500).send({mensaje: 'Unicamente los gerentes pueden eliminar servicios'})
+    if (req.user.rol != 'ROL_ADMIN' ) return res.status(500).send({mensaje: 'Unicamente los administradores pueden editar habitaciones'})
     
-    Servicio.findByIdAndUpdate(idServicio,params,{new: true, useFindAndModify: false},(err,servicioActualizado)=>{
+    Habitacion.findByIdAndUpdate(idHabitacion,params,{new: true, useFindAndModify: false},(err,habitacionActualizada)=>{
 
-    if(err) return res.status(500).send({mensaje: 'Error en la petición del servicio'});
-    if(!servicioActualizado) return res.status(500).send({mensaje: 'Error al actualizar el Servicio seleccionado'});
+    if(err) return res.status(500).send({mensaje: 'Error en la petición de la habitacion'});
+    if(!habitacionActualizada) return res.status(500).send({mensaje: 'Error al actualizar la habitacion seleccionada'});
 
-    return res.status(200).send({servicioActualizado});
+    return res.status(200).send({habitacionActualizada});
 
     })
-   
+}
+
+function eliminarHab(req,res) {
+    
+    var idHabitacion = req.params.idHabitacion;
+    var params = req.body;
+ 
+    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({mensaje: 'Unicamente los administrades pueden eliminar las habitaciones'})
+ 
+    Habitacion.findByIdAndDelete(idHabitacion, (err, habitacionEliminada)=>{
+ 
+    if(err) return res.status(500).send({mensaje: 'Error en la peticion de la habitacion'});
+    if(!habitacionEliminada) return res.status(500).send({mensaje: 'Error en la peticion de eliminar la habitacion'});
+    return res.status(500).send({habitacionEliminada});   
+    });
+ 
 
 }
 
-   
+function obtenerHabitacionesPorHotel(req,res){
+    var idHotel = req.params.idHotel;
+
+    Habitacion.find({idHotel:idHotel},(err,habitacionesEncontradas)=>{
+        if(err) return res.status(404).send({report:'Error find rooms'});
+
+        if(!habitacionesEncontradas) return res.status(200).send({report:'Hotel rooms not exist'});
+
+        return res.status(202).send(habitacionesEncontradas);
+    })
+}
  
+
 
 
 module.exports={
     registrarHabitacion,
-    editarHab
-
-
+    editarHab,
+    eliminarHab,
+    obtenerHabitacionesPorHotel
 }

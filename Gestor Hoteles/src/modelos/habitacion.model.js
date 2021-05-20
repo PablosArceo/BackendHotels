@@ -11,7 +11,5 @@ precio: Number,
 
 idHotel: {type: Schema.Types.ObjectId, ref:'hoteles'}
 
-
 });
-
 module.exports = mongoose.model('habitaciones', habitacionSchema);

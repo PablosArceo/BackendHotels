@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 var EventoSchema = Schema({
     nombreEvento: String,
     capacidad: String,
-    fecha: Date,
+    fecha: String,
     idHotel: {type: Schema.Types.ObjectId, ref: 'hoteles'},
     idtipoEvento: {type: Schema.Types.ObjectId, ref: 'eventos'}
 })
