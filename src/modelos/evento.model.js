@@ -7,8 +7,9 @@ var EventoSchema = Schema({
     nombreEvento: String,
     capacidad: String,
     fecha: String,
+    idtipoEvento: {type: Schema.Types.ObjectId, ref: 'eventos'},
+
     idHotel: {type: Schema.Types.ObjectId, ref: 'hoteles'},
-    idtipoEvento: {type: Schema.Types.ObjectId, ref: 'eventos'}
 })
 
 module.exports = mongoose.model('eventos',EventoSchema);

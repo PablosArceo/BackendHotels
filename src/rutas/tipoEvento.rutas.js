@@ -13,7 +13,9 @@ api.put('/editarTipoEvento/:idTipoEvento',md_autenticacion.ensureAuth,tipoEvento
 
 api.delete('/eliminarTipoEvento/:idTipoEvento',md_autenticacion.ensureAuth,tipoEventoControlador.eliminarTipoEvento);
 api.get('/obtenerTipoEvento',md_autenticacion.ensureAuth,tipoEventoControlador.obtenerTipoEvento);
-  
+api.get('/obtenerTipoEvento',md_autenticacion.ensureAuth,tipoEventoControlador.obtenerTipoEvento);
+api.get('/obtenerTipoEventoID/:idTipoEvento',md_autenticacion.ensureAuth,tipoEventoControlador.obtenerTipoEventoID);
+
 
 
 module.exports = api;

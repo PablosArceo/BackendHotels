@@ -106,11 +106,25 @@ function obtenerTipoEvento(req,res) {
 
 }
 
+function obtenerTipoEventoID(req, res) {
+    var idTipoEvento = req.params.idTipoEvento
+    
+  
+    
+    TipoEvento.findById(idTipoEvento, (err, tiposEventoEncontrados) => {
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion del tipo de  evento' })
+        if (!tiposEventoEncontrados) return res.status(500).send({ mensaje: 'Error en obtener los datos del  tipo de evento' })
+        return res.status(200).send({ tiposEventoEncontrados })
+    })
+}
+
+
 
 
 module.exports ={
     crearTipoEvento,
     editarTipoEvento,
     eliminarTipoEvento,
-    obtenerTipoEvento
+    obtenerTipoEvento,
+    obtenerTipoEventoID
 }

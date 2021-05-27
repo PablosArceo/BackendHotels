@@ -3,9 +3,7 @@ const mongoose = require('mongoose')
 var Schema = mongoose.Schema;
 
 var habitacionSchema = Schema({
-nombreServicio: String,
-numeroHabitacion: Number,
-estado: String,
+nombreHabitacion: String,
 precio: Number, 
 
 

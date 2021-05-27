@@ -3,13 +3,16 @@ const mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var ReservacionSchema = Schema({
-    nombreReservacion: String,
     idUsuario: {type: Schema.Types.ObjectId, ref:'usuarios'},
+    estado: String,
+    fecha_llegada: String,
+    fecha_salida: String,
     idHabitacion: {type: Schema.Types.ObjectId, ref:'habitaciones'},
-    fecha_llegada: Date,
-    fecha_salida: Date,
-/*     idServicio:  {type: Schema.Types.ObjectId, ref:'habitaciones'}
- */
+
+
+    idServicio:  [{type: Schema.Types.ObjectId, ref:'servicios'}]
+ 
 })
 
 module.exports = mongoose.model('reservaciones', ReservacionSchema);
+

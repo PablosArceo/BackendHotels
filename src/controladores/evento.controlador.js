@@ -7,10 +7,12 @@ const TipoEvento = require('../modelos/tipoEvento.model');
 
   // ============ Admin Aplicacion   ============
  
-  function registrarEvento(req,res) {
+  /*   function registrarEvento(req,res) {
 
     var params = req.body;
     let eventoModel = new Evento();
+    var idHotel = req.params.idHotel;
+
 
     if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({mensaje:'Unicamente los administradores pueden registrar un evento'})
 
@@ -58,30 +60,61 @@ const TipoEvento = require('../modelos/tipoEvento.model');
         }else{
             return res.status(500).send({mensaje: 'Por favor ingrese todos los datos'});
         }   
-} 
+}   
+ */
 
-/* function registrarEvento(req, res) {
-    if (req.user.rol != 'ROL_ADMIN') return res.status(500).send({ mensaje: 'Solo los administradores pueden registrar' })
-    var eventoModel = new Evento();
-    var idtipoEvento = req.params.idtipoEvento;
-    var idHotel = req.params.idHotel;
+function registrarEvento(req,res) {
+
     var params = req.body;
+    let eventoModel = new Evento();
+    var idHotel = req.params.idHotel;
 
-    eventoModel.nombreEvento = params.nombreEvento;
-    eventoModel.capacidad = params.capacidad;
-    eventoModel.fecha = params.fecha;
-        eventoModel.hotel = idHotel;
+    if(req.user.rol == 'ROL_ADMIN'){
+        
+        if(params.nombreEvento && params.fecha){  
 
-    eventoModel.idtipoEvento = idtipoEvento;
+            Evento.find({$or: [
+                {nombreEvento: eventoModel.nombreEvento}
+            ]}).exec((err,eventosEncontrados)=>{
 
-    if (params.evento == '' || params.fecha == '') return res.status(500).send({ mensaje: 'Debe rellenar todos los campos' })
-    eventoModel.save((err, eventoGuardado) => {
-        if (err) return res.status(500).send({ mensaje: 'Error al ejecutar la peticion' })
-        if (!eventoGuardado) return res.status(500).send({ mensaje: 'Error al guardar el Evento' })
+                if(eventosEncontrados && eventosEncontrados.length >=1){
+                    return res.status(500).send({mensaje: 'El evento ya existe'});
+                }else{
 
-        return res.status(200).send({ eventoGuardado })
-    })
-} */
+                        TipoEvento.findOne({nombre: params.idTipoEvento},(err,tipoEventoEncontrado)=>{
+
+                            eventoModel.nombreEvento = params.nombreEvento;
+                            eventoModel.capacidad = params.capacidad;
+                            eventoModel.fecha = params.fecha;
+                            eventoModel.idtipoEvento = tipoEventoEncontrado._id;
+                            eventoModel.idHotel = idHotel;
+
+                            if(err) return res.status(500).send({mensaje: 'Error en la petición de tipo evento'});
+                            if(!tipoEventoEncontrado) return res.status(500).send({mensaje: 'El Tipo Evento ingresado no existe'});
+
+                            eventoModel.save((err, eventoGuardado)=>{
+                                if(err) return res.status(500).send({mensaje: 'Error en la petición'});
+        
+                                if(eventoGuardado){
+                                    return res.status(200).send({eventoGuardado});
+                                }
+                            })
+
+                        })
+
+                }
+
+            })
+
+        }else{
+            return res.status(500).send({mensaje: 'Necesita llenar los datos solicitados'});
+        }
+
+    }else{
+        return res.status(500).send({mensaje: 'No posee los permisos necesarios para realizar esta acción'});
+    }
+    
+}
 
 
 
@@ -137,6 +170,20 @@ function obtenerEventos(req,res){
 }
 
 
+function obtenerEventosID(req, res) {
+    var idEvento = req.params.idEvento
+    
+
+    
+    Evento.findById(idEvento, (err, eventoEncontrado) => {
+        if (err) return res.status(500).send({ mensaje: 'Error en la peticion del evento' })
+        if (!eventoEncontrado) return res.status(500).send({ mensaje: 'Error en obtener los datos del evento' })
+        return res.status(200).send({ eventoEncontrado })
+    })
+}
+
+
+
 
 // Eventos por Nombre
 function obtenerEventosPorNombre(req, res){
@@ -153,14 +200,28 @@ function obtenerEventosPorNombre(req, res){
 // Funcion Para buscar Eventos por Hotel
 function obtenerEventosPorHotel(req, res){
     var idHotel = req.params.idHotel;
+    var params= req.body
 
-    Evento.find({ 'idHotel': idHotel}, (err, eventoencontrado) => {
+
+    Evento.find({ idHotel: idHotel}, (err, Eventoencontrado) => {
         if (err) return res.status(500).send({ mensaje: "Error en peticion de evento" });
-        if (!eventoencontrado) return res.status(500).send({ mensaje: "Error en la busqueda de nombre" });
-        return res.status(200).send({ eventoencontrado });
+        if (!Eventoencontrado) return res.status(500).send({ mensaje: "Error en la busqueda de nombre" });
+        return res.status(200).send({ Eventoencontrado });
     })
 }
 
+// Funcion Para buscar Eventos por nombre Hotel
+/* 
+function obtenerEventosPorNombreHotel(req, res){
+    var nombreHotel = req.params.nombreHotel;
+
+    Evento.find({ nombreHotel: nombreHotel}, (err, EventoEncontrado) => {
+        if (err) return res.status(500).send({ mensaje: "Error en peticion" });
+        if (!EventoEncontrado) return res.status(500).send({ mensaje: "Error en la busqueda de nombre" });
+        return res.status(200).send({ EventoEncontrado });
+    })
+}
+ */
 
 function obtenerPorTipoEvento(req, res){
     var idHotel = req.params.idHotel;
@@ -182,7 +243,10 @@ module.exports={
     editarEvento,
     eliminarEvento,
     obtenerEventos,
+    obtenerEventosID,
     obtenerEventosPorNombre,
     obtenerEventosPorHotel,
-    obtenerPorTipoEvento
+    obtenerPorTipoEvento,
+    
+    /* obtenerEventosPorNombreHotel */
 }
