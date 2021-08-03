@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt-nodejs');
 const app = require('./app')
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/SkyHotel', { useNewUrlParser: true, useUnifiedTopology: true }).then(()=>{
+mongoose.connect('mongodb+srv://admin:<admin>@skyhotels.qjrwl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true }).then(()=>{
   console.log('Se encuentra conectado a la base de datos');
  
   var usuario1 = 'ADMIN';
@@ -42,8 +42,8 @@ mongoose.connect('mongodb://localhost:27017/SkyHotel', { useNewUrlParser: true, 
 
     }  )
    
-  app.listen(3900, function () {
-    console.log('El servidor esta arrancando en el puerto: 3900');  
+  app.listen(process.env.PORT || 3800, function () {
+    console.log('El servidor esta arrancando en el puerto: 3800');  
   })
 
 
